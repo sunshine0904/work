@@ -1,0 +1,10 @@
+aes_lib.c  aes_lib.h加密解密文件。
+head.c  head.h自定义头文件、函数。
+ip.txt 原始ip地址，可变化。
+
+stage1文件夹下程序功能：生成加密结构。
+编译命令：gcc aes_lib.c aes_lib.h head.c head.h stage_1.c -w -o stage1
+执行命令: ./stage1
+(linux下直接执行make即可生成可执行文件stage1)。
+执行后生成output.txt文件即为加密结构。
+
