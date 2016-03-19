@@ -16,13 +16,30 @@ int main()
 	uint32_t i = 0,j = 0,count = 0,src_len = 0;
 	char *buff = NULL;
 	int cur_point = 0,file_len = 0;
+	int dencrypt_index = 0;
+
 	
-	char ip1[4] = {0xc0,0xa8,0xff,0x1};//prev.txt
-	char key1[16] = {0xd3,0xc0,0xff,0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-	char ip[4] = {0xd3,0xc0,0xff,0x14};
+	unsigned char ip1[4] = {0xc0,0xa8,0xff,0x1};//prev.txt
+	unsigned char key1[16] = {0xd3,0xc0,0xff,0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+	unsigned char ip[4] = {0xd3,0xc0,0xff,0x14};
 	struct m_ip ip3;
 	memcpy(ip3.ip_h,ip,4);
+	ip3.ip_dec[0] = 211;
+	ip3.ip_dec[1] = 192;
+	ip3.ip_dec[2] = 255;
+	ip3.ip_dec[3] = 20;
+#if 0
+	unsigned char ip1[4] = {0xd3,0xc0,0xff,0x14};//prev.txt
+	unsigned char key1[16] = {0x75,0xc0,0xff,0x5,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+	unsigned char ip[4] = {0x75,0xc0,0xff,0x5};
+	struct m_ip ip3;
+	memcpy(ip3.ip_h,ip,4);
+	ip3.ip_dec[0] = 117;
+	ip3.ip_dec[1] = 192;
+	ip3.ip_dec[2] = 255;
+	ip3.ip_dec[3] = 5;
 
+#endif
 
 #if 0	
 		0xc0 0xa8 0xff 0x1 
@@ -146,6 +163,54 @@ int main()
 	}
 	
 	printf("bit1:%d bit2:%d bit3:%d \n",bit(ip3,aes_struct->pi.index1),bit(ip3,aes_struct->pi.index2),bit(ip3,aes_struct->pi.index3));	
+
+	int  calc_as = bit(ip3,aes_struct->pi.index1) * 1 + bit(ip3,aes_struct->pi.index2) * 2 + bit(ip3,aes_struct->pi.index3) * 2 * 2;
+	printf("calc_as:%d\n",calc_as);
+	for(j = 0;j < 5;j++)
+	{
+		if(calc_as == aes_struct->pas[j].as)
+		{
+			dencrypt_index = j - 1;
+			break;
+		}
+	}
+	printf("dencrypt_index:%d\n",dencrypt_index);
+
+	//dencrypt the data we need(as index -1)
+	AES_ExpandKey(key1,expKey);
+	AES_Decrypt(aes_struct->aes[dencrypt_index].ip1_ip3_time,expKey,dencrypt);
+	for(j = 0;j<16;j++)
+	{
+		printf("%02x ",dencrypt[j]);
+	}
+	printf("\n");
+
+	//compare with the first prev.txt ip
+	unsigned char compare_ip[4];
+	memcpy(compare_ip,dencrypt,4);
+#if 0
+	for(j = 0;j<4;j++)
+	{
+		printf("%02x ",compare_ip[j]);
+	}
+	printf("\n");
+#endif
+	for(j = 0;j<4;j++)
+	{
+		printf("compare_ip:%02x  ip1:%02x\n",compare_ip[j],ip1[j]);
+		if(compare_ip[j] == ip1[j])
+		{
+			if(j == 3)
+			{
+				printf("the same ip\n");
+			}
+		}
+		else
+		{
+			printf("it is the different ip\n");
+			break;
+		}
+	}
 
 #if 0
 	for(i = 0;i<4;i++)
