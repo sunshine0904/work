@@ -125,11 +125,13 @@ int main()
 		{
 			memcpy(ecy_ip.aes[i-1].ip1_ip3_time,temp[i-1].ip_h,4);
 			memcpy(ecy_ip.aes[i-1].ip1_ip3_time + 4,temp[i+1].ip_h,4);
+			memset(ecy_ip.aes[i-1].ip1_ip3_time + 8,0,8);
 		}
 		else
 		{
 			memcpy(ecy_ip.aes[i-1].ip1_ip3_time,temp[i-1].ip_h,4);
 			memcpy(ecy_ip.aes[i-1].ip1_ip3_time + 4,temp[0].ip_h,4);
+			memset(ecy_ip.aes[i-1].ip1_ip3_time + 8,0,8);
 				
 		}
 		
