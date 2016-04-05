@@ -148,6 +148,7 @@ int main()
 	printf("****************end ip data********************/\n\n");
 
 	printf("*********************aes_struct data********************\n");	
+#if 0
 	fseek(fpd,cur_point,SEEK_SET);
 	//printf("cur_point:%d\n",cur_point);
 	printf("aes_struct read len:%d  ",fread(aes_struct,1,sizeof(struct encrypt_ip),fpd));
@@ -233,6 +234,7 @@ int main()
 		printf("%02x  ",((unsigned char *)aes_struct)[i]);
 	}
 	printf("\n");
+#endif
 #endif
 	cur_point += sizeof(struct encrypt_ip);
 	printf("*********************end aes_struct data********************\n");
